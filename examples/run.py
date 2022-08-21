@@ -58,7 +58,7 @@ def get_dataset(
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    config_file = "./examples/L4-C3-P1-T1/config.ini"
+    config_file = "./examples/L6-C3-P1-T1/config.ini"
     config_file_dir = str(Path(config_file).resolve().parent)
 
     config = Cfg(config_file)
