@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+scikit-learn = "*"
+tables = "*"
+torch = {file = "https://download.pytorch.org/whl/cu116/torch-1.12.1%2Bcu116-cp310-cp310-linux_x86_64.whl"}
+tqdm = "*"
+
+[dev-packages]
+pysen = "*"
+flake8 = "*"
+isort = "*"
+mypy = "*"
+pynvim = "*"
+ipython = "*"
+debugpy = "*"
+black = "*"
+
+[requires]
+python_version = "3.10"

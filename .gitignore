@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# data
+/TaxiBJ/*.h5
+/TaxiBJ/*.txt

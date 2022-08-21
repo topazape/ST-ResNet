@@ -1,0 +1,13 @@
+-i https://pypi.org/simple
+joblib==1.1.0; python_version >= '3.6'
+numexpr==2.8.3; python_version >= '3.7'
+numpy==1.23.2
+packaging==21.3; python_version >= '3.6'
+pyparsing==3.0.9; python_full_version >= '3.6.8'
+scikit-learn==1.1.2
+scipy==1.9.0; python_version < '3.12' and python_version >= '3.8'
+tables==3.7.0
+threadpoolctl==3.1.0; python_version >= '3.6'
+https://download.pytorch.org/whl/cu116/torch-1.12.1%2Bcu116-cp310-cp310-linux_x86_64.whl#egg=torch
+tqdm==4.64.0
+typing-extensions==4.3.0; python_version >= '3.7'
