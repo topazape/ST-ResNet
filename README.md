@@ -8,7 +8,7 @@ ST-ResNet ([Deep Spatio-Temporal Residual Networks for Citywide Crowd Flows Pred
 Most of the code in the model definition was based on [https://github.com/KL4805/STResNet-PyTorch](https://github.com/KL4805/STResNet-PyTorch), which is another ST-ResNet Pytorch implimentaion.
 
 ## Data
-Copy the data under TaxiBJ.
+Copy the TaxiBJ dataset under `TaxiBJ` dir.
 
 > **Note**
 > TaxiBJ dataset is currently unavailable due to circumstances at the data provider.
