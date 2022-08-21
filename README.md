@@ -21,3 +21,6 @@ Copy *TaxiBJ* dataset under `TaxiBJ` dir.
 ```sh
 python examples/run.py
 ```
+
+## Reference
+J. Zhang, Y. Zheng and D. Qi, "Deep spatio-temporal residual networks for citywide crowd flows prediction", AAAI, pp. 1655-1661, 2017.
