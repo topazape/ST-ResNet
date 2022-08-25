@@ -30,27 +30,26 @@ options:
 ```
 
 ## Config
-The following is a setting for L4-C3-P1-T1, means *four* residual blocks, *three* closeness time steps, one period time step, one trend time step.
+The following is a setting for L4-C3-P1-T1, means *four* residual blocks, *three* closeness time steps, *one* period time step and *one* trend time step.
 
 ```ini
 [dataset]
-T = 48
-len_closeness = 3
-len_period = 1
-len_trend = 1
-period_interval = 1
-trend_interval = 7
-; 48 * 28
-len_test = 1344
-use_meta = true
-use_holiday = true
-use_meteorol = true
+T = 48			; time steps of the day. T=48 means 24 * 60 / 48 = 30 min = one time step
+len_closeness = 3	; number of time steps used as closeness
+len_period = 1		; number of time steps used as period
+len_trend = 1		; number of time steps used as trend
+period_interval = 1	; 1 specifies 1 day interval: 1 * T = 1 * 48 * 30 min = 24 hr = 1 day
+trend_interval = 7	; 7 specifies 1 week interval: 7 * T = 7 * 48 * 30 min = 7 days = 1 wk
+len_test = 1344		; number of test data
+use_meta = true		; whether to use day of the week and weekend information
+use_holiday = true	; use holiday information
+use_meteorol = true	; use weather information
 
 [model]
-nb_flow = 2
-map_height = 32
-map_width = 32
-nb_residual_unit = 12
+nb_flow = 2		; number of channels: 2 means the number of in/out-flows
+map_height = 32		; grid height
+map_width = 32		; grid width
+nb_residual_unit = 12	; number of residual blocks
 
 [learning]
 epochs = 100
