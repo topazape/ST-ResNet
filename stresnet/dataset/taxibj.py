@@ -1,10 +1,51 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
+import torch
 from sklearn.preprocessing import MinMaxScaler
 from stresnet.dataset.load_data import LoadData, Span
 from stresnet.dataset.stmatrix import STMatrix
+from torch.utils.data import TensorDataset
+
+
+def get_dataset(
+    len_closeness: int,
+    len_period: int,
+    len_trend: int,
+    period_interval: int,
+    trend_interval: int,
+    len_test: int,
+) -> tuple[TensorDataset, TensorDataset, Any, Optional[int]]:
+    taxibj = TaxiBJ()
+    datasets = taxibj.create_dataset(
+        len_closeness=len_closeness,
+        len_period=len_period,
+        len_trend=len_trend,
+        period_interval=period_interval,
+        trend_interval=trend_interval,
+        len_test=len_test,
+    )
+    tr_X = datasets["X_train"]
+    tr_y = datasets["y_train"]
+    va_X = datasets["X_test"]
+    va_y = datasets["y_test"]
+    scaler = datasets["scaler"]
+    external_dim = datasets.get("external_dim")
+
+    train_dataset = TensorDataset(
+        *(
+            [torch.tensor(tr, dtype=torch.float32) for tr in tr_X]
+            + [torch.tensor(tr_y, dtype=torch.float32)]
+        )
+    )
+    valid_dataset = TensorDataset(
+        *(
+            [torch.tensor(va, dtype=torch.float32) for va in va_X]
+            + [torch.tensor(va_y, dtype=torch.float32)]
+        )
+    )
+    return (train_dataset, valid_dataset, scaler, external_dim)
 
 
 class TaxiBJ(LoadData):

@@ -54,7 +54,7 @@ class STResNet(nn.Module):
             nn.Linear(ext_dim, nb_total_flows),
             nn.ReLU(inplace=True),
             # flatten in/out flow * grid_height * grid_width
-            nn.Linear(10, self.nb_flow * self.map_height * self.map_width),
+            nn.Linear(nb_total_flows, self.nb_flow * self.map_height * self.map_width),
         )
         return ext_net
 
