@@ -54,7 +54,7 @@ use_meteorol = true	; use weather information
 nb_flow = 2		; number of channels: 2 means the number of in/out-flows
 map_height = 32		; grid height
 map_width = 32		; grid width
-nb_residual_unit = 12	; number of residual blocks
+nb_residual_unit = 	; number of residual blocks
 
 [learning]
 epochs = 100
