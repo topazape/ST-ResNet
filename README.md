@@ -17,7 +17,7 @@ Copy *TaxiBJ* dataset under `TaxiBJ` dir.
 > See: [TaxiBJ21: An open crowd flow dataset based on Beijing taxi GPS trajectories](https://doi.org/10.1002/itl2.297)
 
 
-## Example
+## Usage
 ```sh
 python run.py [-h] [-s SEED] FILE
 
@@ -27,6 +27,11 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -s SEED, --seed SEED  seed for initializing training
+```
+
+## Example
+```sh
+python run.py examples/L4-C3-P1-T1/config.ini
 ```
 
 ## Config
