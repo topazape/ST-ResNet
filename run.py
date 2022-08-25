@@ -1,6 +1,7 @@
+import argparse
+import random
 import sys
 from pathlib import Path
-from typing import Any, Optional
 
 import torch
 
@@ -10,55 +11,28 @@ sys.path.append(str(Path.joinpath(current_dir, "../")))
 import torch.nn as nn
 import torch.optim as optim
 from stresnet import Trainer
-from stresnet.dataset import TaxiBJ
+from stresnet.dataset.taxibj import get_dataset
 from stresnet.models import STResNet
 from stresnet.utils import Cfg
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader
 
 
-def get_dataset(
-    len_closeness: int,
-    len_period: int,
-    len_trend: int,
-    period_interval: int,
-    trend_interval: int,
-    len_test: int,
-) -> tuple[TensorDataset, TensorDataset, Any, Optional[int]]:
-    taxibj = TaxiBJ()
-    datasets = taxibj.create_dataset(
-        len_closeness=len_closeness,
-        len_period=len_period,
-        len_trend=len_trend,
-        period_interval=period_interval,
-        trend_interval=trend_interval,
-        len_test=len_test,
-    )
-    tr_X = datasets["X_train"]
-    tr_y = datasets["y_train"]
-    va_X = datasets["X_test"]
-    va_y = datasets["y_test"]
-    scaler = datasets["scaler"]
-    external_dim = datasets.get("external_dim")
+def make_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config_file", type=str, metavar="FILE", help="path to config file")
+    parser.add_argument("-s", "--seed", default=0, type=int, help="seed for initializing training")
 
-    train_dataset = TensorDataset(
-        *(
-            [torch.tensor(tr, dtype=torch.float32) for tr in tr_X]
-            + [torch.tensor(tr_y, dtype=torch.float32)]
-        )
-    )
-    valid_dataset = TensorDataset(
-        *(
-            [torch.tensor(va, dtype=torch.float32) for va in va_X]
-            + [torch.tensor(va_y, dtype=torch.float32)]
-        )
-    )
-    return (train_dataset, valid_dataset, scaler, external_dim)
+    return parser.parse_args()
 
+def set_seed(seed: int = 42) -> None:
+    random.seed(seed)
+    torch.manual_seed(seed)
 
-if __name__ == "__main__":
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def main():
+    args = make_parser()
+    args.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    config_file = "./examples/L6-C3-P1-T1/config.ini"
+    config_file = args.config_file
     config_file_dir = str(Path(config_file).resolve().parent)
 
     config = Cfg(config_file)
@@ -98,7 +72,7 @@ if __name__ == "__main__":
         map_width=model_params["map_width"],
         nb_residual_unit=model_params["nb_residual_unit"],
     )
-    st_resnet.to(device)
+    st_resnet.to(args.device)
 
     criterion = nn.MSELoss()
     optimizer = optim.Adam(st_resnet.parameters(), lr=learning_params["learning_rate"])
@@ -109,13 +83,14 @@ if __name__ == "__main__":
         criterion=criterion,
         optimizer=optimizer,
         scaler=scaler,
-        device=device,
+        device=args.device,
         save_dir=config_file_dir,
     )
 
     print(
-        "DEVICE: {}, nb_resunit: {}, closeness: {},  period: {}, trend: {}".format(
-            device,
+        "SEED: {}, DEVICE: {}, nb_resunit: {}, closeness: {},  period: {}, trend: {}".format(
+            args.seed,
+            args.device,
             model_params["nb_residual_unit"],
             dataset_params["len_closeness"],
             dataset_params["len_period"],
@@ -123,3 +98,6 @@ if __name__ == "__main__":
         )
     )
     trainer.fit(st_resnet)
+
+if __name__ == "__main__":
+    main()

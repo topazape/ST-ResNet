@@ -19,7 +19,43 @@ Copy *TaxiBJ* dataset under `TaxiBJ` dir.
 
 ## Example
 ```sh
-python examples/run.py
+python run.py [-h] [-s SEED] FILE
+
+positional arguments:
+  FILE                  path to config file
+
+options:
+  -h, --help            show this help message and exit
+  -s SEED, --seed SEED  seed for initializing training
+```
+
+## Config
+The following is a setting for L4-C3-P1-T1, means *four* residual blocks, *three* closeness time steps, one period time step, one trend time step.
+
+```ini
+[dataset]
+T = 48
+len_closeness = 3
+len_period = 1
+len_trend = 1
+period_interval = 1
+trend_interval = 7
+; 48 * 28
+len_test = 1344
+use_meta = true
+use_holiday = true
+use_meteorol = true
+
+[model]
+nb_flow = 2
+map_height = 32
+map_width = 32
+nb_residual_unit = 12
+
+[learning]
+epochs = 100
+batch_size = 32
+learning_rate = 0.0002
 ```
 
 ## Reference
