@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 # data
-/TaxiBJ/*.h5
-/TaxiBJ/*.txt
+datasets/TaxiBJ/*.h5
+datasets/TaxiBJ/*.txt
+datasets/BikeNYC/*.h5
+datasets/BikeNYC/*.txt
