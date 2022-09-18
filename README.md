@@ -31,14 +31,17 @@ options:
 
 ## Example
 ```sh
-python run.py examples/L4-C3-P1-T1/config.ini
+python run.py examples/TaxiBJ/L4-C3-P1-T1/config.ini
 ```
 
 ## Config
-The following is a setting for L4-C3-P1-T1, means *four* residual blocks, *three* closeness time steps, *one* period time step and *one* trend time step.
+The following is a setting for **TaxiBJ** dataset and L4-C3-P1-T1, means *four* residual blocks, *three* closeness time steps, *one* period time step and *one* trend time step.
 
 ```ini
 [dataset]
+data_files = ["./datasets/TaxiBJ/BJ13_M32x32_T30_InOut.h5", "./datasets/TaxiBJ/BJ14_M32x32_T30_InOut.h5", "./datasets/TaxiBJ/BJ15_M32x32_T30_InOut.h5", "./datasets/TaxiBJ/BJ16_M32x32_T30_InOut.h5"]
+holiday_file = ./datasets/TaxiBJ/BJ_Holiday.txt
+meteorol_file = ./datasets/TaxiBJ/BJ_Meteorology.h5
 T = 48			; time steps of the day. T=48 means 24 * 60 / 48 = 30 min = one time step
 len_closeness = 3	; number of time steps used as closeness
 len_period = 1		; number of time steps used as period
