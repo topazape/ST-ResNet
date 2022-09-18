@@ -9,7 +9,7 @@ Most of the code in the model definition is based on [https://github.com/KL4805/
 
 
 ## Data
-Copy *TaxiBJ* dataset under `TaxiBJ` dir.
+Copy *TaxiBJ* and/or *BikeNYC* dataset under `datasets` dir.
 
 > **Note**
 > TaxiBJ dataset is currently unavailable due to circumstances at the data provider.
