@@ -1,0 +1,4 @@
+[2022-09-18 15:28:02] :stresnet.utils.logger: [INFO] loss: 6.248162269592285
+[2022-09-18 15:28:04] :stresnet.utils.logger: [INFO] loss: 4.923183441162109
+[2022-09-18 15:28:06] :stresnet.utils.logger: [INFO] loss: 4.406319618225098
+[2022-09-18 15:28:08] :stresnet.utils.logger: [INFO] loss: 4.102433681488037

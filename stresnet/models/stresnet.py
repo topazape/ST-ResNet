@@ -37,15 +37,15 @@ class STResNet(nn.Module):
 
         # for fusion
         self.W_c = nn.parameter.Parameter(
-            torch.randn(self.nb_flow, self.map_height, self.map_width),
+            torch.randn(self.nb_flow, self.map_width, self.map_height),
             requires_grad=True,
         )
         self.W_p = nn.parameter.Parameter(
-            torch.randn(self.nb_flow, self.map_height, self.map_width),
+            torch.randn(self.nb_flow, self.map_width, self.map_height),
             requires_grad=True,
         )
         self.W_t = nn.parameter.Parameter(
-            torch.randn(self.nb_flow, self.map_height, self.map_width),
+            torch.randn(self.nb_flow, self.map_width, self.map_height),
             requires_grad=True,
         )
 
@@ -97,7 +97,7 @@ class STResNet(nn.Module):
 
         if self.external_dim:
             e_out = self.e_net(ext).view(
-                -1, self.nb_flow, self.map_height, self.map_width
+                -1, self.nb_flow, self.map_width, self.map_height
             )
             # fusion with ext data
             res = self.W_c.unsqueeze(0) * c_out
