@@ -11,7 +11,7 @@ sys.path.append(str(Path.joinpath(current_dir, "../")))
 import torch.nn as nn
 import torch.optim as optim
 from stresnet import Trainer
-from stresnet.dataset.taxibj import get_dataset
+from stresnet.dataset.makedataset import get_dataset
 from stresnet.models import STResNet
 from stresnet.utils import Cfg
 from torch.utils.data import DataLoader
@@ -19,14 +19,20 @@ from torch.utils.data import DataLoader
 
 def make_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_file", type=str, metavar="FILE", help="path to config file")
-    parser.add_argument("-s", "--seed", default=0, type=int, help="seed for initializing training")
+    parser.add_argument(
+        "config_file", type=str, metavar="FILE", help="path to config file"
+    )
+    parser.add_argument(
+        "-s", "--seed", default=0, type=int, help="seed for initializing training"
+    )
 
     return parser.parse_args()
+
 
 def set_seed(seed: int = 42) -> None:
     random.seed(seed)
     torch.manual_seed(seed)
+
 
 def main():
     args = make_parser()
@@ -41,12 +47,19 @@ def main():
     learning_params = config.get_params(type="learning")
 
     train_dataset, valid_dataset, scaler, external_dim = get_dataset(
+        data_files=dataset_params["data_files"],
+        holiday_file=dataset_params["holiday_file"],
+        meteorol_file=dataset_params["meteorol_file"],
+        T=dataset_params["T"],
         len_closeness=dataset_params["len_closeness"],
         len_period=dataset_params["len_period"],
         len_trend=dataset_params["len_trend"],
         period_interval=dataset_params["period_interval"],
         trend_interval=dataset_params["trend_interval"],
         len_test=dataset_params["len_test"],
+        use_meta=dataset_params["use_meta"],
+        map_height=model_params["map_height"],
+        map_width=model_params["map_width"],
     )
 
     train_dataloader = DataLoader(
@@ -98,6 +111,7 @@ def main():
         )
     )
     trainer.fit(st_resnet)
+
 
 if __name__ == "__main__":
     main()

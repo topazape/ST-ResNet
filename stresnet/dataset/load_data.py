@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from enum import Enum, auto
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import tables
@@ -9,31 +9,37 @@ from sklearn.preprocessing import minmax_scale
 current_dir = Path(__file__).resolve().parent
 
 
-class Span(Enum):
-    BJ13 = auto()
-    BJ14 = auto()
-    BJ15 = auto()
-    BJ16 = auto()
-
-
 @dataclass
 class LoadData:
-    BJ13: Path = Path("./TaxiBJ/BJ13_M32x32_T30_InOut.h5")
-    BJ14: Path = Path("./TaxiBJ/BJ14_M32x32_T30_InOut.h5")
-    BJ15: Path = Path("./TaxiBJ/BJ15_M32x32_T30_InOut.h5")
-    BJ16: Path = Path("./TaxiBJ/BJ16_M32x32_T30_InOut.h5")
-    METEOROLOGY: Path = Path("./TaxiBJ/BJ_Meteorology.h5")
-    HOLIDAY: Path = Path("./TaxiBJ/BJ_Holiday.txt")
+    data_files: list[str]
+    holiday_file: str
+    meteorology_file: str
 
     def __post_init__(self):
-        assert self.BJ13.exists()
-        assert self.BJ14.exists()
-        assert self.BJ15.exists()
-        assert self.BJ16.exists()
-        assert self.METEOROLOGY.exists()
-        assert self.HOLIDAY.exists()
+        self.DATA_PATHS = []
+        for data_file in self.data_files:
+            data_path = Path(data_file)
+            if data_path.exists():
+                self.DATA_PATHS.append(data_path)
+            else:
+                raise FileNotFoundError
 
-    def load_holiday(self, timeslots: np.ndarray) -> np.ndarray:
+        holiday_path = Path(self.holiday_file)
+        if holiday_path.exists():
+            self.HOLIDAY = holiday_path
+        else:
+            self.HOLIDAY = None
+
+        meteorology_path = Path(self.meteorology_file)
+        if meteorology_path.exists():
+            self.METEOROLOGY = meteorology_path
+        else:
+            self.METEOROLOGY = None
+
+    def load_holiday(self, timeslots: np.ndarray) -> Optional[np.ndarray]:
+        if not self.HOLIDAY:
+            return None
+
         timeslots = np.frompyfunc(lambda x: x[:8], 1, 1)(timeslots)
 
         with open(self.HOLIDAY, "r") as f:
@@ -72,7 +78,7 @@ class LoadData:
         return merge_data
 
     def _remove_incomplete_days(
-        self, dat: tables.file.File, T=48
+        self, dat: tables.file.File, T: int
     ) -> tuple[np.ndarray, np.ndarray]:
         # 20140425 has 24 timestamps, which does not appear in `incomplete_days` in the original implementation.
         # So I reimplemented it in a different way.
@@ -95,18 +101,15 @@ class LoadData:
         new_timestamps = np.delete(timestamps, del_idx)
         return new_data, new_timestamps
 
-    def load_data(self, span: Enum):
-        if span.name == "BJ13":
-            dat = tables.open_file(self.BJ13, mode="r")
-        elif span.name == "BJ14":
-            dat = tables.open_file(self.BJ14, mode="r")
-        elif span.name == "BJ15":
-            dat = tables.open_file(self.BJ15, mode="r")
-        else:
-            dat = tables.open_file(self.BJ16, mode="r")
+    def load_data(self, T: int) -> tuple[list[np.ndarray], list[np.ndarray]]:
+        data_all = []
+        timestamp_all = []
+        for data_path in self.DATA_PATHS:
+            dat = tables.open_file(data_path, mode="r")
+            data, timestamps = self._remove_incomplete_days(dat, T=T)
+            data[data < 0] = 0.0
+            data_all.append(data)
+            timestamp_all.append(timestamps)
+            dat.close()
 
-        data, timestamps = self._remove_incomplete_days(dat)
-        dat.close()
-
-        data[data < 0] = 0.0
-        return data, timestamps
+        return data_all, timestamp_all

@@ -6,16 +6,17 @@ from tqdm import tqdm
 
 
 class STMatrix:
-    def __init__(self, data: np.ndarray, timestamps: np.ndarray, T: int = 48) -> None:
+    def __init__(self, data: np.ndarray, timestamps: np.ndarray, T: int) -> None:
         assert len(data) == len(timestamps)
         self.data = data
         self.timestamps = timestamps
         self.T = T
         self.np_timestamps = self._string2timestamp(timestamps)
+
         self.ts_all = np.arange(
             self.np_timestamps.min(),
-            (self.np_timestamps.max() + np.timedelta64(30, "m")),
-            np.timedelta64(30, "m"),
+            (self.np_timestamps.max() + np.timedelta64(int(24 / self.T * 60), "m")),
+            np.timedelta64(int(24 / self.T * 60), "m"),
         )
 
     def _string2timestamp(self, timestamps: np.ndarray) -> np.ndarray:
@@ -49,6 +50,8 @@ class STMatrix:
         len_trend: int = 3,
         period_interval: int = 1,
         trend_interval: int = 7,
+        map_height: int = 32,
+        map_width: int = 32,
     ) -> dict[str, np.ndarray]:
         start_t = max(
             [
@@ -86,15 +89,15 @@ class STMatrix:
                 ]
             ):
                 c_mtx = self.get_matrices(c_ts)
-                c_mtx = c_mtx.reshape(-1, 32, 32)
+                c_mtx = c_mtx.reshape(-1, map_width, map_height)
                 x_c.append(c_mtx)
 
                 p_mtx = self.get_matrices(p_ts)
-                p_mtx = p_mtx.reshape(-1, 32, 32)
+                p_mtx = p_mtx.reshape(-1, map_width, map_height)
                 x_p.append(p_mtx)
 
                 t_mtx = self.get_matrices(t_ts)
-                t_mtx = t_mtx.reshape(-1, 32, 32)
+                t_mtx = t_mtx.reshape(-1, map_width, map_height)
                 x_t.append(t_mtx)
 
                 y.append(self.get_matrices(np.array([t])))
