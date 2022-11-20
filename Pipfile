@@ -3,12 +3,18 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[[source]]
+url = "https://download.pytorch.org/whl/cu117"
+verify_ssl = false
+name = "pytorch"
+
 [packages]
 numpy = "*"
 scikit-learn = "*"
 tables = "*"
-torch = {file = "https://download.pytorch.org/whl/cu116/torch-1.12.1%2Bcu116-cp310-cp310-linux_x86_64.whl"}
 tqdm = "*"
+# pytorch
+torch = "*"
 
 [dev-packages]
 pysen = "*"
